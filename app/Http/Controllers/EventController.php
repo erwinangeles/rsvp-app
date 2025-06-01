@@ -21,7 +21,7 @@ class EventController extends Controller
         $event = Event::create([
             'title' => $request->title,
             'description' => $request->description,
-            'uuid' => Str::uuid(),
+            'uuid' => Str::lower(Str::random(12)),
         ]);
         return redirect()->route('events.show', $event);
     }
@@ -44,11 +44,14 @@ class EventController extends Controller
 
     public function rsvp(Request $request, Event $event)
     {
-        $request->validate([
+        $rules = [
             'phone' => 'required',
-            'item' => 'required',
-            'name' => 'required_without:rsvp_id',
-        ]);
+            'item'  => 'required',
+        ];
+
+        if (!session()->has('rsvp_id')) {
+            $rules['name'] = 'required';
+        }
 
         $request->validate($rules);
 
