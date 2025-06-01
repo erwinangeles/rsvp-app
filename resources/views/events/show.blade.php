@@ -22,6 +22,18 @@
             <h3 class="card-title">{{ $event->title }}</h3>
             <p class="text-muted">{{ $event->description }}</p>
         </div>
+        @auth
+            @if ($event->user_id === auth()->id())
+                <div class="px-2 mb-3">
+                    <a href="{{ route('events.edit', $event) }}" class="btn btn-outline-primary">Edit</a>
+                    <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this event? This cannot be undone.');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-outline-danger">Delete Event</button>
+                    </form>
+                </div>
+            @endif
+        @endauth
     </div>
 
     @if (session('rsvp_id'))

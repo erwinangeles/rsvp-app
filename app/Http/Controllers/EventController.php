@@ -21,8 +21,29 @@ class EventController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'uuid' => Str::lower(Str::random(8)),
+            'user_id' => auth()->id(),
         ]);
         return redirect()->route('events.show', $event);
+    }
+
+    public function edit(Event $event)
+    {
+        return view('events.edit', compact('event'));
+    }
+
+    public function update(Request $request, Event $event)
+    {
+        $request->validate(['title' => 'required']);
+        $event->update($request->only('title', 'description'));
+
+        return redirect()->route('events.show', $event)->with('success', 'Event updated!');
+    }
+
+    public function destroy(Event $event)
+    {
+        $event->delete();
+
+        return redirect('/')->with('success', 'Event deleted!');
     }
 
     public function show(Event $event)
