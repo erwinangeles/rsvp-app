@@ -17,7 +17,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('events.store') }}">
+            <form method="POST" action="{{ route('events.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="title" class="form-label">Event Title</label>
@@ -26,6 +26,34 @@
                 <div class="mb-3">
                     <label for="description" class="form-label">Event Description</label>
                     <textarea id="description" name="description" class="form-control" rows="3">{{ old('description') }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="banner_image" class="form-label">Banner Image</label>
+                    <input
+                        type="file"
+                        name="banner_image"
+                        id="banner_image"
+                        class="form-control @error('banner_image') is-invalid @enderror"
+                        accept="image/*"
+                    >
+                    @error('banner_image')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="meta_image" class="form-label">Meta Image</label>
+                    <input
+                        type="file"
+                        name="meta_image"
+                        id="meta_image"
+                        class="form-control @error('meta_image') is-invalid @enderror"
+                        accept="image/*"
+                    >
+                    @error('meta_image')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
                 <button type="submit" class="btn btn-primary">Create Event</button>
             </form>

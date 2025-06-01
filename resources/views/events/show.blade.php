@@ -2,6 +2,14 @@
 
 @section('title', $event->title)
 
+@section('banner')
+    @if ($event->banner_image)
+        <div class="mb-4">
+            <img src="{{ $event->banner_image }}" alt="Event Banner"
+                class="img-fluid w-100 shadow-sm" style="max-height: 320px; object-fit: cover;">
+        </div>
+    @endif
+@endsection
 @section('content')
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -16,7 +24,6 @@
             </ul>
         </div>
     @endif
-
     <div class="card shadow-sm mb-3">
         <div class="card-body">
             <h3 class="card-title">{{ $event->title }}</h3>

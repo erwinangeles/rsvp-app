@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Models\Rsvp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -16,12 +17,32 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['title' => 'required']);
+        $request->validate([
+            'title' => 'required',
+            'banner_image' => 'nullable|image|max:2048',
+            'meta_image' => 'nullable|image|max:2048',
+        ]);
+
+        $bannerImagePath = null;
+        $metaImagePath = null;
+
+        if ($request->hasFile('banner_image')) {
+            $bannerImagePath = $request->file('banner_image')->store('images', 's3');
+            $bannerImagePath = Storage::disk('s3')->url($bannerImagePath);
+        }
+
+        if ($request->hasFile('meta_image')) {
+            $metaImagePath = $request->file('meta_image')->store('images', 's3');
+            $metaImagePath = Storage::disk('s3')->url($metaImagePath);
+        }
+
         $event = Event::create([
             'title' => $request->title,
             'description' => $request->description,
             'uuid' => Str::lower(Str::random(8)),
             'user_id' => auth()->id(),
+            'meta_image' => $bannerImagePath,
+            'meta_image' => $metaImagePath,
         ]);
         return redirect()->route('events.show', $event);
     }
@@ -33,8 +54,28 @@ class EventController extends Controller
 
     public function update(Request $request, Event $event)
     {
-        $request->validate(['title' => 'required']);
-        $event->update($request->only('title', 'description'));
+        $request->validate([
+            'title' => 'required',
+            'banner_image' => 'nullable|image|max:2048',
+            'meta_image' => 'nullable|image|max:2048',
+        ]);
+
+        $data = [
+            'title' => $request->title,
+            'description' => $request->description,
+        ];
+
+        if ($request->hasFile('banner_image')) {
+            $path = $request->file('banner_image')->store('images', 's3');
+            $data['banner_image'] = Storage::disk('s3')->url($path);
+        }
+
+        if ($request->hasFile('meta_image')) {
+            $path = $request->file('meta_image')->store('images', 's3');
+            $data['meta_image'] = Storage::disk('s3')->url($path);
+        }
+
+        $event->update($data);
 
         return redirect()->route('events.show', $event)->with('success', 'Event updated!');
     }

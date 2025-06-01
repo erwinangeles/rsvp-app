@@ -8,7 +8,10 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body class="bg-light py-4">
+<header>
+@yield('banner')
+</header>
+<body class="bg-light">
     <div class="container">
         @yield('content')
     </div>
