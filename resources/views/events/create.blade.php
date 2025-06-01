@@ -9,7 +9,17 @@
     <div class="container">
         <div class="card shadow-sm mx-auto" style="max-width: 500px;">
             <div class="card-body">
-                <h3 class="card-title mb-4">Create an Event</h3>
+                <h3 class="card-title mb-4 text-center">Create an Event</h3>
+
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <form method="POST" action="{{ route('events.store') }}">
                     @csrf
@@ -24,7 +34,7 @@
                         <textarea name="description" class="form-control" rows="3"></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Create</button>
+                    <button type="submit" class="btn btn-primary w-100">Create Event</button>
                 </form>
             </div>
         </div>

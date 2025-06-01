@@ -38,16 +38,71 @@ class EventController extends Controller
     public function rsvp(Request $request, Event $event)
     {
         $request->validate([
+            'name' => 'required_if:rsvp_id,null',
+            'item' => 'required',
+            'phone' => 'required',
+        ]);
+
+        $rsvp = $event->rsvps()->firstOrCreate(
+            ['phone' => $request->phone],
+            [
+                'name' => $request->name,
+                'item' => $request->item,
+                'phone' => $request->phone,
+            ]
+        );
+
+        if (!$rsvp->wasRecentlyCreated) {
+            $rsvp->update([
+                'item' => $request->item,
+                'name' => $request->name ?? $rsvp->name,
+            ]);
+        }
+
+        session(['rsvp_id' => $rsvp->id]);
+
+        return redirect()->route('events.show', $event)->with('success', 'RSVP saved!');
+    }
+
+    public function verifyPhone(Request $request, Event $event)
+    {
+        $rsvp = $event->rsvps()->where('phone', $request->phone)->first();
+
+        if ($rsvp) {
+            session(['rsvp_id' => $rsvp->id]);
+            return response()->json(['found' => true]);
+        }
+
+        return response()->json(['found' => false]);
+    }
+
+    public function edit(Event $event, Rsvp $rsvp)
+    {
+        abort_if(session('rsvp_id') !== $rsvp->id, 403);
+        return view('events.edit', compact('event', 'rsvp'));
+    }
+
+    public function update(Request $request, Event $event, Rsvp $rsvp)
+    {
+        abort_if(session('rsvp_id') !== $rsvp->id, 403);
+
+        $request->validate([
             'name' => 'required',
             'item' => 'required',
+            'phone' => 'required',
         ]);
 
-        Rsvp::create([
-            'event_id' => $event->id,
-            'name' => $request->name,
-            'item' => $request->item,
-        ]);
+        $rsvp->update($request->only('name', 'item', 'phone'));
 
-        return redirect()->route('events.show', $event);
+        return redirect()->route('events.show', $event)->with('success', 'RSVP updated!');
+    }
+
+    public function destroy(Event $event, Rsvp $rsvp)
+    {
+        abort_if(session('rsvp_id') !== $rsvp->id, 403);
+        $rsvp->delete();
+        session()->forget('rsvp_id');
+
+        return redirect()->route('events.show', $event)->with('success', 'RSVP deleted.');
     }
 }
