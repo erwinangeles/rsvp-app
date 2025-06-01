@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rsvps', function (Blueprint $table) {
+        Schema::create('rsvp_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->string('phone');
+            $table->foreignId('rsvp_id')->constrained()->onDelete('cascade');
+            $table->string('item');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rsvps');
+        Schema::dropIfExists('rsvp_items');
     }
 };

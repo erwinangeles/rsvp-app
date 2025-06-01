@@ -1,13 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\RsvpItemController;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/', [EventController::class, 'index'])->name('home');
+Route::get('/', fn () => redirect()->route('events.create'));
+
+Route::get('/events/create', [EventController::class, 'index'])->name('events.create');
 Route::post('/events', [EventController::class, 'store'])->name('events.store');
 Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+Route::post('/events/{event}/verify', [EventController::class, 'verifyPhone'])->name('rsvp.verify');
 Route::post('/events/{event}/rsvp', [EventController::class, 'rsvp'])->name('events.rsvp');
-Route::post('/events/{event}/rsvp/verify', [EventController::class, 'verifyPhone'])->name('rsvp.verify');
-Route::get('/events/{event}/rsvp/{rsvp}/edit', [EventController::class, 'edit'])->name('rsvp.edit');
-Route::put('/events/{event}/rsvp/{rsvp}', [EventController::class, 'update'])->name('rsvp.update');
-Route::delete('/events/{event}/rsvp/{rsvp}', [EventController::class, 'destroy'])->name('rsvp.destroy');
+
+Route::delete('/events/{event}/item/{item}', [RsvpItemController::class, 'destroy'])->name('rsvp.item.destroy');

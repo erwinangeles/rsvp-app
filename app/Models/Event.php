@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Event extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['title', 'description', 'uuid'];
 
     public function rsvps()
@@ -14,7 +16,7 @@ class Event extends Model
         return $this->hasMany(Rsvp::class);
     }
 
-    public function getRouteKeyName(): string
+    public function getRouteKeyName()
     {
         return 'uuid';
     }
