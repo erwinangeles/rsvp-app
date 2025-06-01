@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Rsvp;
-use App\Models\RsvpItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -21,7 +20,7 @@ class EventController extends Controller
         $event = Event::create([
             'title' => $request->title,
             'description' => $request->description,
-            'uuid' => Str::lower(Str::random(12)),
+            'uuid' => Str::lower(Str::random(8)),
         ]);
         return redirect()->route('events.show', $event);
     }
@@ -46,11 +45,12 @@ class EventController extends Controller
     {
         $rules = [
             'phone' => 'required',
-            'item'  => 'required',
         ];
 
         if (!session()->has('rsvp_id')) {
             $rules['name'] = 'required';
+        } else {
+            $rules['item'] = 'required'; // only required when user is already RSVP’d
         }
 
         $request->validate($rules);
@@ -60,7 +60,9 @@ class EventController extends Controller
             ['name' => $request->name]
         );
 
-        $rsvp->items()->create(['item' => $request->item]);
+        if ($request->filled('item')) {
+            $rsvp->items()->create(['item' => $request->item]);
+        }
 
         session(['rsvp_id' => $rsvp->id]);
 

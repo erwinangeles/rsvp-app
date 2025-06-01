@@ -10,14 +10,14 @@
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
+                @foreach ($errors->all() as $e)
+                    <li>{{ $e }}</li>
                 @endforeach
             </ul>
         </div>
     @endif
 
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-sm mb-3">
         <div class="card-body">
             <h3 class="card-title">{{ $event->title }}</h3>
             <p class="text-muted">{{ $event->description }}</p>
@@ -25,31 +25,32 @@
     </div>
 
     @if (session('rsvp_id'))
-        <div class="card shadow-sm mb-4">
+        <div class="card shadow-sm mb-3">
             <div class="card-body">
-                <h4 class="card-title">Add Item</h4>
-
                 <form method="POST" action="{{ route('events.rsvp', $event) }}">
                     @csrf
                     <input type="hidden" name="phone" value="{{ \App\Models\Rsvp::find(session('rsvp_id'))->phone }}">
                     <div class="mb-3">
                         <label for="item" class="form-label">What are you bringing?</label>
-                        <input placeholder="ex: Mac and Cheese 🧀" type="text" id="item" name="item" class="form-control @error('item') is-invalid @enderror" required>
+                        <input type="text" id="item" name="item" class="form-control @error('item') is-invalid @enderror" required>
                         @error('item')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="submit" class="btn btn-success w-100">Add Item</button>
                 </form>
             </div>
         </div>
     @endif
 
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <h4 class="card-title">Who's Bringing What</h4>
-            <ul class="list-group list-group-flush mt-3">
-                @forelse ($event->rsvps as $rsvp)
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <h4 class="card-title">Who's Bringing What</h4>
+        <ul class="list-group list-group-flush mt-3">
+            @php $shown = false; @endphp
+            @foreach ($event->rsvps as $rsvp)
+                @if ($rsvp->items->isNotEmpty())
+                    @php $shown = true; @endphp
                     <li class="list-group-item">
                         <strong>{{ $rsvp->name }}</strong>
                         <ul class="mt-2">
@@ -67,24 +68,26 @@
                             @endforeach
                         </ul>
                     </li>
-                @empty
-                    <li class="list-group-item text-muted">No one has RSVP’d yet.</li>
-                @endforelse
-            </ul>
-        </div>
-    </div>
+                @endif
+            @endforeach
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+            @unless ($shown)
+                <li class="list-group-item text-muted">No one has RSVP’d with an item yet.</li>
+            @endunless
+        </ul>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
             <label class="form-label">Share this event</label>
-                <div class="input-group mb-3">
+            <div class="input-group mb-3">
                 <input type="text" id="shareLink" class="form-control" readonly value="{{ route('events.show', $event) }}">
                 <button id="copyLinkBtn" class="btn btn-outline-secondary" type="button">Copy</button>
             </div>
             <small id="copiedNotice" class="form-text text-success" style="display: none;">Link copied!</small>
-        </div>
     </div>
-
+</div>
     @if (!session('rsvp_id'))
         <!-- Phone Modal -->
         <div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
@@ -95,7 +98,7 @@
                         <h5 class="modal-title">Enter Your Phone Number</h5>
                     </div>
                     <div class="modal-body">
-                        <input type="text" class="form-control" id="verifyPhone" name="phone" placeholder="Phone Number" required>
+                        <input type="text" class="form-control" id="verifyPhone" placeholder="Phone Number" required>
                         <div id="verifyError" class="text-danger mt-2 d-none">Phone not found. Please enter your name next.</div>
                     </div>
                     <div class="modal-footer">
@@ -120,14 +123,8 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
 
-                        <input type="text" class="form-control mb-2 @error('item') is-invalid @enderror" name="item" placeholder="What are you bringing?" required>
-                        @error('item')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-
-                        <input type="hidden" name="phone" value="{{ old('phone') }}">
                         @error('phone')
-                            <div class="text-danger">{{ $message }}</div>
+                            <div class="text-danger mt-2">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="modal-footer">
@@ -160,8 +157,8 @@
                             if (res.found) {
                                 location.reload();
                             } else {
-                                phoneModal.hide();
                                 $('#hiddenPhone').val(phone);
+                                phoneModal.hide();
                                 nameModal.show();
                             }
                         }
