@@ -49,6 +49,20 @@ class EventController extends Controller
     public function show(Event $event)
     {
         $event->load('rsvps.items');
+
+        if (auth()->check() && $event->user_id === auth()->id()) {
+            $user = auth()->user();
+
+            if ($user->phone) {
+                $rsvp = $event->rsvps()->firstOrCreate(
+                    ['phone' => $user->phone],
+                    ['name' => $user->name]
+                );
+
+                session(['rsvp_id' => $rsvp->id]);
+            }
+        }
+
         return view('events.show', compact('event'));
     }
 
