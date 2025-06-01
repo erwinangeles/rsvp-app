@@ -2,6 +2,15 @@
 
 @section('title', $event->title)
 
+@section('meta')
+    @if ($event->meta_image)
+    <meta property="og:image" content="{{ $event->meta_image }}">
+    <meta property="og:title" content="{{ $event->title }}">
+    <meta property="og:description" content="{{ $event->description }}">
+    <meta name="twitter:card" content="summary_large_image">
+    @endif
+@endsection
+
 @section('banner')
     @if ($event->banner_image)
         <div class="mb-4">
