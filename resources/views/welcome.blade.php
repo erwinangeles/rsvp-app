@@ -18,7 +18,7 @@
             </div>
 
             @if ($events->isEmpty())
-                <p class="text-muted">You haven’t created any events yet.</p>
+                <p class="text-muted mt-3">You haven’t created any events yet.</p>
             @else
                 <div class="container mt-4">
                     <h4 class="text-start mb-3">Your Events</h4>
