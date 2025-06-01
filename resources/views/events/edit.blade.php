@@ -51,7 +51,7 @@
                     </div>
 
                      <div class="mb-3">
-                        <label for="banner_image" class="form-label">Bannger Image (optional)</label>
+                        <label for="banner_image" class="form-label">Banner Image (optional)</label>
                         @if ($event->banner_image)
                             <div class="mb-2">
                                 <img src="{{ $event->banner_image }}" alt="Current Meta Image" class="img-fluid rounded border" style="max-height: 200px;">
