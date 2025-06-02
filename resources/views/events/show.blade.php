@@ -106,7 +106,7 @@
     </div>
 </div>
 
-<div class="card shadow-sm">
+<div class="card shadow-sm mb-5">
     <div class="card-body">
             <label class="form-label">Share this event</label>
             <div class="input-group mb-3">
@@ -119,14 +119,14 @@
     @if (!session('rsvp_id'))
         <!-- Phone Modal -->
         <div class="modal fade" id="phoneModal" tabindex="-1" aria-labelledby="phoneModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <form id="verifyPhoneForm" class="modal-content">
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title">Enter Your Phone Number</h5>
                     </div>
                     <div class="modal-body">
-                        <input type="text" class="form-control" id="verifyPhone" placeholder="Phone Number" required>
+                        <input type="tel" class="form-control" id="verifyPhone" placeholder="(555) 555-5555" required pattern=".*\d{3}.*\d{3}.*\d{4}.*" title="Enter a valid phone number">
                         <div id="verifyError" class="text-danger mt-2 d-none">Phone not found. Please enter your name next.</div>
                     </div>
                     <div class="modal-footer">
@@ -138,7 +138,7 @@
 
         <!-- Name Modal -->
         <div class="modal fade" id="nameModal" tabindex="-1" aria-labelledby="nameModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <form method="POST" action="{{ route('events.rsvp', $event) }}" class="modal-content">
                     @csrf
                     <input type="hidden" name="phone" id="hiddenPhone">
@@ -165,9 +165,26 @@
 
     <script>
         $(function () {
+            $('#verifyPhone').on('input', function () {
+                let input = $(this).val().replace(/\D/g, ''); // remove non-digits
+
+                if (input.length > 0) input = '(' + input;
+                if (input.length > 4) input = input.slice(0, 4) + ') ' + input.slice(4);
+                if (input.length > 9) input = input.slice(0, 9) + '-' + input.slice(9);
+                if (input.length > 14) input = input.slice(0, 14); // max length
+
+                $(this).val(input);
+            });
             @if (!session('rsvp_id'))
-                const phoneModal = new bootstrap.Modal(document.getElementById('phoneModal'));
-                const nameModal = new bootstrap.Modal(document.getElementById('nameModal'));
+                const phoneModal = new bootstrap.Modal(document.getElementById('phoneModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                const nameModal = new bootstrap.Modal(document.getElementById('nameModal'), {
+                    backdrop: 'static',
+                    keyboard: false
+                });
                 phoneModal.show();
 
                 $('#verifyPhoneForm').on('submit', function (e) {

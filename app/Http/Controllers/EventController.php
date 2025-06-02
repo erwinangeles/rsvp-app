@@ -95,8 +95,9 @@ class EventController extends Controller
             $user = auth()->user();
 
             if ($user->phone) {
+                $normalizedPhone = $this->normalizePhone($user->phone);
                 $rsvp = $event->rsvps()->firstOrCreate(
-                    ['phone' => $user->phone],
+                    ['phone' => $normalizedPhone],
                     ['name' => $user->name]
                 );
 
@@ -109,7 +110,8 @@ class EventController extends Controller
 
     public function verifyPhone(Request $request, Event $event)
     {
-        $rsvp = $event->rsvps()->where('phone', $request->phone)->first();
+        $phone = $this->normalizePhone($request->phone);
+        $rsvp = $event->rsvps()->where('phone', $phone)->first();
         if ($rsvp) {
             session(['rsvp_id' => $rsvp->id]);
             return response()->json(['found' => true]);
@@ -117,22 +119,26 @@ class EventController extends Controller
         return response()->json(['found' => false]);
     }
 
+    private function normalizePhone(string $rawPhone): string
+    {
+        return substr(preg_replace('/\D/', '', $rawPhone), -10);
+    }
+
     public function rsvp(Request $request, Event $event)
     {
-        $rules = [
-            'phone' => 'required',
-        ];
-
+        $rules = ['phone' => 'required'];
         if (!session()->has('rsvp_id')) {
             $rules['name'] = 'required';
         } else {
-            $rules['item'] = 'required'; // only required when user is already RSVP’d
+            $rules['item'] = 'required';
         }
 
         $request->validate($rules);
 
+        $phone = $this->normalizePhone($request->phone);
+
         $rsvp = Rsvp::firstOrCreate(
-            ['event_id' => $event->id, 'phone' => $request->phone],
+            ['event_id' => $event->id, 'phone' => $phone],
             ['name' => $request->name]
         );
 
