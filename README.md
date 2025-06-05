@@ -14,12 +14,12 @@ Quickly RSVP with your name, phone number, and choose or add items to bring.
 ![Alt text](/public/images/screen-edit.png "EventApp")
 
 ## Features
-📝 Create Events: Title, description, banner image, and more
-👥 Shareable RSVP Links: Anyone with the link can RSVP
-📱 Phone-based RSVP: Just enter your phone to confirm identity
-🧺 Bring Items: RSVP with specific food, drinks, or supplies
-🔁 Edit Your RSVP: Update what you're bringing anytime
-🔒 Session-based Identity: No login required, just your phone
+- 📝 Create Events: Title, description, banner image, and more
+- 👥 Shareable RSVP Links: Anyone with the link can RSVP
+- 📱 Phone-based RSVP: Just enter your phone to confirm identity
+- 🧺 Bring Items: RSVP with specific food, drinks, or supplies
+- 🔁 Edit Your RSVP: Update what you're bringing anytime
+- 🔒 Session-based Identity: No login required, just your phone
 
 ## 🚀 Getting Started
 See below for the the detailed instructions for setup.
