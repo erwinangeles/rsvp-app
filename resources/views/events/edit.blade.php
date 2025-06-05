@@ -86,10 +86,10 @@
                         @enderror
                     </div>
 
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ route('events.show', $event) }}" class="btn btn-outline-secondary">Cancel</a>
-                        <button type="submit" class="btn btn-success">Save Changes</button>
-                    </div>
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route('home')}}" class="btn btn-outline-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </div>
                 </form>
             </div>
         </div>
