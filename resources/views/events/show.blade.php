@@ -40,7 +40,9 @@
         </div>
         @auth
             @if ($event->user_id === auth()->id())
-                <div class="px-2 mb-3">
+            <div class="d-flex justify-content-between px-2 mb-3">
+                <a href="{{ route('home') }}" class="btn btn-outline-primary">My Events</a>
+                <div class="d-flex gap-2">
                     <a href="{{ route('events.edit', $event) }}" class="btn btn-outline-primary">Edit</a>
                     <form action="{{ route('events.destroy', $event) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this event? This cannot be undone.');">
                         @csrf
@@ -48,6 +50,7 @@
                         <button class="btn btn-outline-danger">Delete Event</button>
                     </form>
                 </div>
+            </div>
             @endif
         @endauth
     </div>
