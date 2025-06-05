@@ -59,6 +59,18 @@ return [
             'throw' => false,
             'report' => false,
         ],
+
+        'uploads' => array_filter([
+            'driver' => env('UPLOAD_DISK_DRIVER', 'local'),
+            'key' => env('AWS_S3_ACCESS_KEY_ID'),
+            'secret' => env('AWS_S3_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_S3_DEFAULT_REGION'),
+            'bucket' => env('AWS_S3_BUCKET'),
+            'root' => env('UPLOAD_DISK_DRIVER', 'local') === 'local' ?
+                storage_path('app/public') :
+                null,
+            'use_path_style_endpoint' => false,
+        ]),
     ],
 
     /*

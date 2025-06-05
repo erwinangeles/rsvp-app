@@ -27,13 +27,13 @@ class EventController extends Controller
         $metaImagePath = null;
 
         if ($request->hasFile('banner_image')) {
-            $bannerImagePath = $request->file('banner_image')->store('images', 's3');
-            $bannerImagePath = Storage::disk('s3')->url($bannerImagePath);
+            $bannerImagePath = $request->file('banner_image')->store('images', 'uploads');
+            $bannerImagePath = Storage::disk('uploads')->url($bannerImagePath);
         }
 
         if ($request->hasFile('meta_image')) {
-            $metaImagePath = $request->file('meta_image')->store('images', 's3');
-            $metaImagePath = Storage::disk('s3')->url($metaImagePath);
+            $metaImagePath = $request->file('meta_image')->store('images', 'uploads');
+            $metaImagePath = Storage::disk('uploads')->url($metaImagePath);
         }
 
         $event = Event::create([
@@ -66,13 +66,13 @@ class EventController extends Controller
         ];
 
         if ($request->hasFile('banner_image')) {
-            $path = $request->file('banner_image')->store('images', 's3');
-            $data['banner_image'] = Storage::disk('s3')->url($path);
+            $path = $request->file('banner_image')->store('images', 'uploads');
+            $data['banner_image'] = Storage::disk('uploads')->url($path);
         }
 
         if ($request->hasFile('meta_image')) {
-            $path = $request->file('meta_image')->store('images', 's3');
-            $data['meta_image'] = Storage::disk('s3')->url($path);
+            $path = $request->file('meta_image')->store('images', 'uploads');
+            $data['meta_image'] = Storage::disk('uploads')->url($path);
         }
 
         $event->update($data);
