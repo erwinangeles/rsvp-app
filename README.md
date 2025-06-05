@@ -7,11 +7,10 @@ See the event details and who's going/bringing what.
 
 ## ✍️ RSVP Form
 Quickly RSVP with your name, phone number, and choose or add items to bring.
-![Alt text](/public/images/verify-phone.png "EventApp")
-![Alt text](/public/images/screen-items.png "EventApp")
+![Alt text](/public/images/screen-rsvp.png "EventApp")
 
 ## 📝 Manage Event Details
-![Alt text](/public/images/manage-events.png "EventApp")
+![Alt text](/public/images/screen-events.png "EventApp")
 ![Alt text](/public/images/screen-edit.png "EventApp")
 
 ## Features
